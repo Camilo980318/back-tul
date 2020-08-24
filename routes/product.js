@@ -39,8 +39,9 @@ app.post('/', mdAuth.verifyToken, (req, res) => {
     var product = new Product({
         sku: body.sku,
         name: body.name,
-        description: body.description
-    })
+        description: body.description,
+        price: body.price
+    });
 
     product.save((err, productSaved) => {
 

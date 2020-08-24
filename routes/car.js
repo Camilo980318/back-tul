@@ -3,6 +3,32 @@ var Car = require('../models/Car');
 
 var app = express();
 
+//===============================================================
+//                    GET Car
+//===============================================================
+
+app.get('/', (req, res) => {
+
+    Car.find({})
+        .populate('user')
+        .exec((err, cars) => {
+
+            if (err) {
+                res.status(500).json({
+                    ok: false,
+                    mensaje: "Lo sentimos, hubo un error"
+                });
+
+            } else {
+
+                res.status(200).json({
+                    ok: true,
+                    cars: cars
+                });
+            }
+        });
+});
+
 
 //===============================================================
 //                     POST Car
@@ -36,6 +62,7 @@ app.post('/', (req, res) => {
 app.put('/:id', (req, res) => {
 
     var id = req.params.id;
+    var body = req.body;
 
     Car.findById(id, (err, carDB) => {
 
@@ -48,6 +75,10 @@ app.put('/:id', (req, res) => {
         } else {
 
             carDB.status = "completed"
+            carDB.total = body.total;
+            carDB.user = body.user;
+            carDB.fecha_pago = Date.now();
+
             carDB.save((err, carUpdated) => {
                 if (err) {
                     res.status(500).json({

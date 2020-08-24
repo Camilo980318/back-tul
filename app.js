@@ -34,11 +34,13 @@ var uploadImageRoute = require('./routes/uploadImageProdcut');
 var sendImageRoute = require('./routes/sendImageProduct');
 var carRoute = require('./routes/car');
 var productCarRoute = require('./routes/productCar');
+var userRoute = require('./routes/user');
 
 
 //==========================================================================
 //                              USO DE RUTAS
 //==========================================================================
+app.use('/users', userRoute);
 app.use('/products-car', productCarRoute);
 app.use('/car', carRoute);
 app.use('/send-image', sendImageRoute);

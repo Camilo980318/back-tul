@@ -13,7 +13,42 @@ app.get('/', (req, res) => {
 
     ProductsCar.find({})
         .populate('product_id')
-        .populate('car_id')
+        .populate({
+            path: 'car_id',
+            populate: { path: 'user' }
+        })
+        .exec((err, productsCars) => {
+
+            if (err) {
+                res.status(500).json({
+                    ok: false,
+                    mensaje: "Lo sentimos, hubo un error"
+                });
+
+            } else {
+
+                res.status(200).json({
+                    ok: true,
+                    productsCars: productsCars
+                });
+            }
+        });
+});
+
+//===============================================================
+//                    GET ProductsCar By CarId
+//===============================================================
+
+app.get('/:idCar', (req, res) => {
+
+    var idCar = req.params.idCar;
+
+    ProductsCar.find({ car_id: idCar })
+        .populate('product_id')
+        .populate({
+            path: 'car_id',
+            populate: { path: 'user' }
+        })
         .exec((err, productsCars) => {
 
             if (err) {
@@ -44,7 +79,8 @@ app.post('/', (req, res) => {
     var productCar = new ProductsCar({
         car_id: body.car_id,
         product_id: body.product_id,
-        quantity: body.quantity
+        quantity: body.quantity,
+        subtotal: body.subtotal
     });
 
     productCar.save((err, productCarSaved) => {
@@ -88,6 +124,7 @@ app.put('/:id', (req, res) => {
         } else {
 
             productcarDB.quantity = body.quantity
+            productcarDB.subtotal = body.subtotal;
             productcarDB.save((err, productCarUpdated) => {
 
                 if (err) {
